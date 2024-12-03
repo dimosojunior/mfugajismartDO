@@ -52,7 +52,7 @@ def start():
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
     # Pass the function object directly
-    scheduler.add_job(weekly_vaccine_reminder, 'interval', seconds=10, replace_existing=True, id='weekly_vaccine_reminder')
+    scheduler.add_job(weekly_vaccine_reminder, 'cron', hour=21, minute=30, replace_existing=True, id='weekly_vaccine_reminder')
 
     register_events(scheduler)
     scheduler.start()
