@@ -1,0 +1,461 @@
+i'm using django rest frame work and here i'm trying to get all products groups, in my model called 'MakundiYaVyakula', so i need to get all groups from this model 'MakundiYaVyakula' except this group called 'Vyanzo Vya Protini Na Mafuta',
+
+so i need to you to make modifications in this are;
+'# Get all food groups
+        all_food_groups = MakundiYaVyakula.objects.all()
+        
+
+        # Check if each food group has an item in the cart
+        missing_food_groups = []
+        for food_group in all_food_groups:
+            if not cart_items.filter(product__FoodGroup=food_group).exists():
+                missing_food_groups.append(food_group.Jina)
+
+        if missing_food_groups:
+            missing_groups_str = ", ".join(missing_food_groups)
+            return Response({
+                'error': f'Imeshindikana kukusanya taarifa zako, unapaswa kuchagua chakula kutoka kwenye kila kundi la chakula, kwenye uchaguzi wako hujachagua chakula kutoka kwenye kundi la: {missing_groups_str}.'
+            }, status=status.HTTP_400_BAD_REQUEST)'
+so pass through my codes and modify them to implement this;
+class VyakulaOrderView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    
+
+    #----------------MAKE ORDER --------------------
+    def post(self, request):
+        # EG: http://127.0.0.1:8000/VyakulaOrder/?TotalCPPercentageRequired_Finisher=32&TotalWangaPercentageRequired_Finisher=33&TotalMafutaPercentageRequired_Finisher=34&TotalCPPercentageRequired_Layer=29&TotalWangaPercentageRequired_Layer=30&TotalMafutaPercentageRequired_Layer=31&TotalCPPercentageRequired_Grower=26&TotalWangaPercentageRequired_Grower=27&TotalMafutaPercentageRequired_Grower=28&TotalCPPercentageRequired_Starter=20&TotalWangaPercentageRequired_Starter=25&TotalMafutaPercentageRequired_Starter=34&UnaKiasiGaniChaChakula=100&AinaYaKuku=Kuku aina ya Kroila&StaterFeed=1 - 4&GrowerFeed=5 - 17&LayerFeed=18&FinisherFeed=0&UmriKwaSiku=7
+     
+        user = request.user
+        data = request.data
+        Customer = request.user.username
+
+        UmriKwaSiku = int(request.query_params.get("UmriKwaSiku"))
+        TotalFoodAmountChoosen = float(request.query_params.get("UnaKiasiGaniChaChakula"))
+
+        AinaYaKuku = request.query_params.get("AinaYaKuku")
+        StaterFeed = request.query_params.get("StaterFeed")
+        GrowerFeed = request.query_params.get("GrowerFeed")
+        LayerFeed = request.query_params.get("LayerFeed")
+        FinisherFeed = request.query_params.get("FinisherFeed")
+
+
+        #hapa tunageti zile value za kukompare hizi tunzitoa kwenye
+        #model ya Aina Ya Kuku, hizi ni total percentage required ya kila
+        #kirutubisho kwa aina fulani ya chakula km starter, grower na etc.
+        #tunacompare virutubisho vitatu tu hapa
+
+        #---------STARTER--------------------------
+        TotalCPPercentageRequired_Starter = float(request.query_params.get("TotalCPPercentageRequired_Starter"))
+        TotalWangaPercentageRequired_Starter = float(request.query_params.get("TotalWangaPercentageRequired_Starter"))
+        TotalMafutaPercentageRequired_Starter = float(request.query_params.get("TotalMafutaPercentageRequired_Starter"))
+
+        #------------GROWER------------------
+        TotalCPPercentageRequired_Grower = float(request.query_params.get("TotalCPPercentageRequired_Grower"))
+        TotalWangaPercentageRequired_Grower = float(request.query_params.get("TotalWangaPercentageRequired_Grower"))
+        TotalMafutaPercentageRequired_Grower = float(request.query_params.get("TotalMafutaPercentageRequired_Grower"))
+
+        #--------------LAYER--------------------
+        TotalCPPercentageRequired_Layer = float(request.query_params.get("TotalCPPercentageRequired_Layer"))
+        TotalWangaPercentageRequired_Layer = float(request.query_params.get("TotalWangaPercentageRequired_Layer"))
+        TotalMafutaPercentageRequired_Layer = float(request.query_params.get("TotalMafutaPercentageRequired_Layer"))
+
+        #--------------FINISHER--------------------
+        TotalCPPercentageRequired_Finisher = float(request.query_params.get("TotalCPPercentageRequired_Finisher"))
+        TotalWangaPercentageRequired_Finisher = float(request.query_params.get("TotalWangaPercentageRequired_Finisher"))
+        TotalMafutaPercentageRequired_Finisher = float(request.query_params.get("TotalMafutaPercentageRequired_Finisher"))
+
+        #----Baada ya hapo tunatengeneza variables nyingine 3 maana yake baada ya kuangalia
+        #amechagua aina gani ya kuku na umri gani tunafilter kutokana na chaguo hilo je hiyo
+        #ni aina gani ya chakula, baada ya kujua aina ya chakula ili tucompare na values
+        #zetu za jumla ambazo ni CP< WANGA NA MAFUTA kutokana na kipindi maalumu.
+
+        TotalCPPercentageRequired = 0
+        TotalWangaPercentageRequired = 0
+        TotalMafutaPercentageRequired = 0
+
+        total_Constant_Kilos = 0
+        total_Constant_percentage_required = 0
+        
+
+        total_price = request.data.get('total_price', 0)  # You may calculate this on the server
+        total_Kilos = request.data.get('total_Kilos', 0)  # You may calculate this on the server
+        
+        cart = VyakulaCart.objects.filter(
+                user=user, 
+                ordered=False
+            ).first()
+
+        #room = ProductsRooms.objects.get(id=data.get('room'))
+        #table = ProductsTables.objects.get(id=data.get('table'))
+        #Customer = ProductsCustomers.objects.get(id=data.get('Customer'))
+
+        if not cart:
+            return Response({'error': 'No items in the cart'}, status=status.HTTP_400_BAD_REQUEST)
+
+        cart_items = VyakulaCartItems.objects.filter(
+        user=user, 
+        cart=cart
+
+        )
+        #print(f"CART ITEMS: {cart_items}")
+
+        Constant_cart_items = VyakulaCartItems.objects.filter(
+            user=user, 
+            cart=cart
+
+            ).exclude(product__FoodGroup__Jina__in=["Vyanzo vya Protini na Mafuta", "Vyanzo vya Wanga"])
+        #print(f"CONSTANT CART ITEMS: {Constant_cart_items}")
+
+
+        Variables_cart_items = VyakulaCartItems.objects.filter(
+            user=user, 
+            cart=cart
+
+            ).exclude(product__FoodGroup__Jina__in=["Vihifadhi Vyakula na Vimeng'enya", "Vyanzo vya Vitamini na Madini"])
+        #print(f"VARIABLES CART ITEMS: {Variables_cart_items}")
+        # Hesabu jumla ya TotalPercentageRequired kwa bidhaa zote kwenye kikapu
+        # total_percentage_required = sum(
+        #     item.product.TotalPercentageRequired for item in cart_items
+        #     )
+
+
+        #-----------FOR CONSTANT FOOD GROUPS-------------------------------
+        #for constant hatuna haja ya kutafuta new percentage tafuta uzito mojakwamoja
+        #Vyanzo Vya Vitamini na Madini, Vihifadhi Chakula na Vimeng'enya
+
+        #----------KUKu WA KROILA------------
+        if AinaYaKuku == "Kuku aina ya Kroila" and StaterFeed == "1 - 4" and UmriKwaSiku >= 0 and UmriKwaSiku <= 28:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Starter / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Starter for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+
+        if AinaYaKuku == "Kuku aina ya Kroila" and GrowerFeed == "5 - 17" and UmriKwaSiku >= 29 and UmriKwaSiku <= 119:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Grower / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Grower for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+
+        if AinaYaKuku == "Kuku aina ya Kroila" and LayerFeed == "18" and UmriKwaSiku >= 120:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Layer / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Layer for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+            
+
+
+
+        #---------------KUKU WA MAYAI-------------
+        if AinaYaKuku == "Kuku wa Mayai (Layers)" and StaterFeed == "1 - 4" and UmriKwaSiku >= 0 and UmriKwaSiku <= 28:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Starter / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Starter for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+
+            
+
+        if AinaYaKuku == "Kuku wa Mayai (Layers)" and GrowerFeed == "5 - 17" and UmriKwaSiku >= 29 and UmriKwaSiku <= 119:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Grower / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Grower for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+            
+
+        if AinaYaKuku == "Kuku wa Mayai (Layers)" and LayerFeed == "18" and UmriKwaSiku >= 120:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Layer / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Layer for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+            
+
+
+
+
+        #------------KUKU WA BROILA-------------
+        if AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and StaterFeed == "1 - 2" and UmriKwaSiku >= 0 and UmriKwaSiku <= 14:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Starter / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Starter for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+            
+
+        if AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and GrowerFeed == "3 - 4" and UmriKwaSiku >= 15 and UmriKwaSiku <= 28:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Grower / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Grower for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+            
+
+        if AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and FinisherFeed == "5" and UmriKwaSiku >= 29:
+            total_Constant_Kilos = sum(
+                (item.product.TotalPercentageRequired_Finisher / 100) * TotalFoodAmountChoosen for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT KILOS {total_Constant_Kilos}")
+
+            total_Constant_percentage_required = sum(
+                item.product.TotalPercentageRequired_Finisher for item in Constant_cart_items
+                )
+            #print(f"TOTAL CONSTANT percentage {total_Constant_percentage_required}")
+            
+
+
+
+
+
+
+
+
+
+        #-----------FOR VARIABLES FOOD GROUPS-------------------------------
+        #Vyanzo Vya Protini na Mafuta, Vyanzo Vya Wanga
+
+        #----------KUKu WA KROILA------------
+        if AinaYaKuku == "Kuku aina ya Kroila" and StaterFeed == "1 - 4" and UmriKwaSiku >= 0 and UmriKwaSiku <= 28:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Starter for item in Variables_cart_items
+                )
+
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Starter
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Starter
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Starter
+            #print(f"Starter: Product: {item.product.product_name} TotalRequired: {total_percentage_required}")
+
+        if AinaYaKuku == "Kuku aina ya Kroila" and GrowerFeed == "5 - 17" and UmriKwaSiku >= 29 and UmriKwaSiku <= 119:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Grower for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Grower
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Grower
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Grower
+            #print(f"Grower: Product: {item.product.product_name} TotalRequired: {total_percentage_required}")
+
+        if AinaYaKuku == "Kuku aina ya Kroila" and LayerFeed == "18" and UmriKwaSiku >= 120:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Layer for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Layer
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Layer
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Layer
+            #print(f"Layer: Product: {item.product.product_name} TotalRequired: {total_percentage_required}")
+
+
+
+
+        #---------------KUKU WA MAYAI-------------
+        if AinaYaKuku == "Kuku wa Mayai (Layers)" and StaterFeed == "1 - 4" and UmriKwaSiku >= 0 and UmriKwaSiku <= 28:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Starter for item in Variables_cart_items
+                )
+
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Starter
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Starter
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Starter
+
+        if AinaYaKuku == "Kuku wa Mayai (Layers)" and GrowerFeed == "5 - 17" and UmriKwaSiku >= 29 and UmriKwaSiku <= 119:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Grower for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Grower
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Grower
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Grower
+
+        if AinaYaKuku == "Kuku wa Mayai (Layers)" and LayerFeed == "18" and UmriKwaSiku >= 120:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Layer for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Layer
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Layer
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Layer
+
+
+
+
+        #------------KUKU WA BROILA-------------
+        if AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and StaterFeed == "1 - 2" and UmriKwaSiku >= 0 and UmriKwaSiku <= 14:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Starter for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Starter
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Starter
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Starter
+
+        if AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and GrowerFeed == "3 - 4" and UmriKwaSiku >= 15 and UmriKwaSiku <= 28:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Grower for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Grower
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Grower
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Grower
+
+        if AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and FinisherFeed == "5" and UmriKwaSiku >= 29:
+            total_percentage_required = sum(
+                item.product.TotalPercentageRequired_Finisher for item in Variables_cart_items
+                )
+            #hizi ni za kucompare
+            TotalCPPercentageRequired = TotalCPPercentageRequired_Finisher
+            TotalWangaPercentageRequired = TotalWangaPercentageRequired_Finisher
+            TotalMafutaPercentageRequired = TotalMafutaPercentageRequired_Finisher
+
+
+        if total_percentage_required < 100:
+            return Response({
+                'error': 'Imeshindikana kukusanya taarifa zako, kwasababu idadi ya vyakula ilivyovichagua havitoshi kutengeneza mchanganyiko sahihi wa chakula. \n Tafadhali ongeza vyakula kuendelea'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        
+
+        # Get all food groups
+        all_food_groups = MakundiYaVyakula.objects.all()
+
+        # Check if each food group has an item in the cart
+        missing_food_groups = []
+        for food_group in all_food_groups:
+            if not cart_items.filter(product__FoodGroup=food_group).exists():
+                missing_food_groups.append(food_group.Jina)
+
+        if missing_food_groups:
+            missing_groups_str = ", ".join(missing_food_groups)
+            return Response({
+                'error': f'Imeshindikana kukusanya taarifa zako, unapaswa kuchagua chakula kutoka kwenye kila kundi la chakula, kwenye uchaguzi wako hujachagua chakula kutoka kwenye kundi la: {missing_groups_str}.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+        # Create the order
+        # order = ProductsOrder.objects.create(user=user, total_price=total_price, table_number=table.TableNumber)
+        order = VyakulaOrder.objects.create(
+                Customer=Customer, 
+                user=user, 
+                total_price=total_price, 
+                total_Kilos=total_Kilos,
+
+                #hii ni TotalFoodMixerPercentage for Variables Food Groups
+                TotalFoodMixerPercentage=total_percentage_required,
+
+                #hii ni Kilos for constant Food Group
+                #hii itatumika kweny kupata order items tunachukua kilos alizozichagua
+                #minus hii  TotalMixerKios_ForConstantFoodGroups
+                TotalMixerKios_ForConstantFoodGroups=total_Constant_Kilos,
+                #hii ni TotalFoodMixerPercentage for Constant Food Groups
+                TotalConstantFoodMixerPercentage=total_Constant_percentage_required,
+
+                TotalFoodAmount = TotalFoodAmountChoosen,
+
+                TotalCPPercentageRequired = TotalCPPercentageRequired,
+                TotalWangaPercentageRequired = TotalWangaPercentageRequired,
+                TotalMafutaPercentageRequired = TotalMafutaPercentageRequired,
+
+                AinaYaKuku=AinaYaKuku,
+                StaterFeed=StaterFeed,
+                GrowerFeed=GrowerFeed,
+                FinisherFeed=FinisherFeed,
+                LayerFeed=LayerFeed,
+                UmriKwaSiku=UmriKwaSiku
+
+
+
+            )
+        
+        # Assign the first category ID found to the Order CategoryId field
+        # if product_category_ids:
+        #     order.CategoryId = product_category_ids.pop()
+        #     order.save()
+
+        total_cart_items = VyakulaCartItems.objects.filter(
+                user=user
+            )
+
+        total_price = 0
+        total_Kilos = 0
+        for items in total_cart_items:
+            total_price += items.price
+            total_Kilos += items.quantity
+
+        order.total_price = total_price
+        order.total_Kilos = total_Kilos
+
+        order.save()
+
+        # table.TableStatus = False
+        # table.save()
+
+        # Retrieve cart items and add them to the order
+        # cart_items = VyakulaCartItems.objects.filter(
+        #         user=user, 
+        #         cart=cart
+        #     )
+        for cart_item in cart_items:
+            VyakulaOrderItems.objects.create(
+                user=user,
+                order=order,
+                product=cart_item.product,
+                
+                price=cart_item.price,
+                quantity=cart_item.quantity,
+
+                #room=room,
+                # table=table,
+                # Customer=Customer
+                # CustomerFullName=cart_item.CustomerFullName,
+                # CustomerAddress=cart_item.CustomerAddress,
+                # PhoneNumber=cart_item.PhoneNumber
+            )
+
+        # Clear the user's cart
+        cart_items.delete()
+        cart.total_price = 0
+        cart.total_Kilos = 0
+        cart.ordered = True
+        cart.save()
+
+        return Response(VyakulaOrderSerializer(order).data, status=status.HTTP_201_CREATED)
