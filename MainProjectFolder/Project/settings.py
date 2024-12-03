@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'AddAppViewSets',
     'accounts.apps.AccountsConfig',
     'import_export',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
