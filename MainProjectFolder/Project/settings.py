@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','mfugajismart.net','www.mfugajismart.net','137.184.204.91']
+ALLOWED_HOSTS = ['localhost','5.189.183.80','127.0.0.1','mfugajismart.net','www.mfugajismart.net','137.184.204.91']
 
 
 # Application definition
@@ -104,17 +104,29 @@ AUTH_USER_MODEL="App.MyUser"
 # }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'mfugajismartdb',
+#         'USER':'mfugajismart',
+#         'PASSWORD':'Dimoso@9898',
+#         'HOST':'localhost',
+#         'PORT':'',
+#     }
+# }
+
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mfugajismartdb',
-        'USER':'mfugajismart',
+        'NAME': 'microfinancedb',
+        'USER':'microfinance',
         'PASSWORD':'Dimoso@9898',
         'HOST':'localhost',
         'PORT':'',
     }
 }
-
 
 
 
