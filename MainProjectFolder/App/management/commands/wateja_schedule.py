@@ -1,3 +1,8 @@
+from App.models import *
+from django.utils.timezone import now
+from datetime import timedelta
+
+
 class Command(BaseCommand):
     help = 'Check conditions for WatejaWote2 and send emails.'
 
