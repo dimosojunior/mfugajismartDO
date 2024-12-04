@@ -358,7 +358,7 @@ class KumbushoUsafishajiBanda(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username,phone,expo_push_token, password=None):
+    def create_user(self, email, username,phone,expo_push_token=None, password=None):
         if not email:
             raise ValueError("email is required")
         if not username:
@@ -387,6 +387,8 @@ class MyUserManager(BaseUserManager):
             username=username,
             password=password,
             phone=phone,
+            expo_push_token=None  # Superuser doesn't require expo_push_token
+            
 
         )
         user.is_admin=True
