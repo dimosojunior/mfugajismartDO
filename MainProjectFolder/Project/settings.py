@@ -104,29 +104,29 @@ AUTH_USER_MODEL="App.MyUser"
 # }
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'mfugajismartdb',
-#         'USER':'mfugajismart',
-#         'PASSWORD':'Dimoso@9898',
-#         'HOST':'localhost',
-#         'PORT':'',
-#     }
-# }
-
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'microfinancedb',
-        'USER':'microfinance',
+        'NAME': 'mfugajismartdb',
+        'USER':'mfugajismart',
         'PASSWORD':'Dimoso@9898',
         'HOST':'localhost',
         'PORT':'',
     }
 }
+
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'microfinancedb',
+#         'USER':'microfinance',
+#         'PASSWORD':'Dimoso@9898',
+#         'HOST':'localhost',
+#         'PORT':'',
+#     }
+# }
 
 
 
