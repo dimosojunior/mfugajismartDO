@@ -469,9 +469,20 @@ class InformUsersAdmin(ImportExportModelAdmin):
 
 #admin.site.register(MyUser, MyUserAdmin)
 
-admin.site.register(VyakulaCart, VyakulaCartAdmin)
-admin.site.register(VyakulaCartItems, VyakulaCartItemsAdmin)
+# admin.site.register(VyakulaCart, VyakulaCartAdmin)
+# admin.site.register(VyakulaCartItems, VyakulaCartItemsAdmin)
 
+@admin.register(VyakulaCart)  
+class VyakulaCartAdmin(ImportExportModelAdmin):
+    list_display = ["id","total_price", "Created", "Updated"]
+    list_filter =["Created"]
+    #search_fields = ["Customer"]
+
+@admin.register(VyakulaCartItems)
+class VyakulaCartItemsAdmin(ImportExportModelAdmin):
+    list_display = ["id","user", "Created","Updated"]
+    list_filter =["Created","Updated"]
+    search_fields = ["user"]
 
 
 
