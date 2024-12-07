@@ -19,7 +19,7 @@ def run():
             if time_elapsed == 4 and not mteja.Nje_Ya_Mkata_Leo:
                 mteja.Nje_Ya_Mkata_Leo = True
                 mteja.save(update_fields=['Nje_Ya_Mkata_Leo'])
-                send_email(mteja, "Nje Ya Mkata Leo condition reached.")
+                send_email(mteja, "Leo ndo siku ya kutoka nje ya mkataba, ni siku yako ya 30")
                 copy_to_nje_ya_mkataba_copies(mteja)
 
             if time_elapsed == 5 and mteja.Nje_Ya_Mkata_Leo:
