@@ -1,3 +1,7 @@
+
+
+
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -6317,8 +6321,18 @@ def AddNewWatejaWote(request, id):
         SikuYaKupokea = request.POST.get('SikuYaKupokea')
         phoneYaMteja = request.POST.get('phoneYaMteja')
         emailYaMteja = request.POST.get('emailYaMteja')
-        MkoaWaMteja = request.POST.get('MkoaWaMteja')
+        #MkoaWaMteja = request.POST.get('MkoaWaMteja')
         WilayaYaMteja = request.POST.get('WilayaYaMteja')
+
+        # Retrieve the related Mikoa instance using the ID
+        MkoaWaMteja_id = request.POST.get('MkoaWaMteja')  # This gets the ID from the form
+        try:
+            MkoaWaMteja_instance = Mikoa.objects.get(id=MkoaWaMteja_id)
+            MkoaWaMteja_name = MkoaWaMteja_instance.JinaLaMkoa  # Access the name
+            print(f"Mkoa wa Mteja: {MkoaWaMteja_name}")  # Display the name in the console
+        except Mikoa.DoesNotExist:
+            MkoaWaMteja_name = None
+            print("Mkoa wa Mteja not found")
 
         form = WatejaWoteCreateForm(request.POST or None, files=request.FILES)
 
@@ -6360,7 +6374,7 @@ def AddNewWatejaWote(request, id):
 
             #SeND EMAIL KWA MZALISHAJI
             subject = "Mfugaji Smart"
-            message = f"Tunakutaarifu kuwa mteja mwenye jina {JinaLaMteja} ameweka oda yake leo ya kuhitaji huduma hii, {HudumaJinaLaHuduma} siku {SikuYaKupokea} baada ya leo. \n Maelezo kamili ya huduma. \n Jina la mteja: {JinaLaMteja} \n Namba ya simu ya mteja:{Mzalishajiphone} \n Mkoa: {MkoaWaMteja} \n Wilaya: {WilayaYaMteja} \n Bei Ya Jumla {HudumaTotalPrice} \n Kiasi Alicholipa: {PaidAmount} \n Kiasi Anachodaiwa: {Remained_Display_Value}"
+            message = f"Tunakutaarifu kuwa mteja mwenye jina {JinaLaMteja} ameweka oda yake leo ya kuhitaji huduma hii, {HudumaJinaLaHuduma} siku {SikuYaKupokea} baada ya leo. \n Maelezo kamili ya huduma. \n Jina la mteja: {JinaLaMteja} \n Namba ya simu ya mteja:{phoneYaMteja} \n Mkoa: {MkoaWaMteja_name} \n Wilaya: {WilayaYaMteja} \n Bei Ya Jumla {HudumaTotalPrice} \n Kiasi Alicholipa: {PaidAmount} \n Kiasi Anachodaiwa: {Remained_Display_Value}"
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [Mzalishajiemail]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
