@@ -1,15 +1,34 @@
+PUBLISHING PYTHON DJANGO PROJECT TO VPS SERVER USING GURNICORN AND NGINX
+
+
 https://cloud.digitalocean.com/projects?i=e75dae
+
+Account Credentials:
+        Login with Google Account:
+                           Email: juniordimoso8@gmail.com
+                           Password:  Dimoso@9898
+                            Ip Address: 137.184.204.91
+                           Droplet Name: mfugajismart
+                          Droplet Password: dimoSo@9898Junior
+                           Database Name: mfugajismartdb
+
+                                
 
 https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04
 
 137.184.204.91
 
+
+
+
+
+0. apt update && apt upgrade -y
 1. adduser dimoso
 2. usermod -aG sudo dimoso
 3. sudo apt-get install python3-pip python3-dev libpq-dev postgresql postgresql-contrib nginx
 4. sudo -u postgres psql
 
-create user mfugajismart;
+create user mfugajismart;  
 create database mfugajismartdb;
 alter role mfugajismart with password 'Dimoso@9898';
 grant all previleges on database mfugajismartdb to mfugajismart;
@@ -62,6 +81,32 @@ DATABASES = {
 #-------------install all packages----------
 24. pip install -r requirements.txt
 25. python manage.py makemigrations
+
+
+
+
+####################IF THERE IS THIS ERROR ################
+
+--------django.db.utils.OperationalError: FATAL:  password authentication failed for user "microfinance"
+FATAL:  password authentication failed for user "microfinance"
+
+-----------------------------------
+
+
+FOLLO THESE STEPS;
+-sudo -u postgres psql
+-\du
+-CREATE ROLE microfinance WITH LOGIN PASSWORD 'Dimoso@9898';
+-\l
+-CREATE DATABASE microfinancedb OWNER microfinance;
+-GRANT ALL PRIVILEGES ON DATABASE microfinancedb TO microfinance;
+-ALTER ROLE microfinance WITH PASSWORD 'Dimoso@9898';
+
+-\q
+
+-python manage.py migrate
+
+#-----------######### MWISHO HAPA ############################
 
 
 #-------after making migrations if there is an error 'No module called pkg_resources', run these two commands;
@@ -151,6 +196,11 @@ WantedBy=multi-user.target
 
 
 #---ukifanya changes zozote kwenye hilo file run hiz commands;
+
+#Run pia hata kama ni kwa mara ya kwanza
+
+-pip show gunicorn
+-pip install gunicorn
 -sudo systemctl daemon-reload
 -sudo systemctl restart gunicorn
 
@@ -168,7 +218,7 @@ WantedBy=multi-user.target
 
 
 
-#----------------NO configure Nginx-----------
+#----------------NOW configure Nginx-----------
 
 #weka folder moja tu ndani ya sites-available, ukiweka lingine utapata warning
 
@@ -197,6 +247,53 @@ server {
         proxy_pass http://unix:/home/dimoso/Project.sock;
     }
 }
+
+
+
+#UKIWA TEYARI UNA HTTPS PASTE THIS;
+server {
+    server_name mfugajismart.net 137.184.204.91  www.mfugajismart.net;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/dimoso/mfugajismartDO/MainProjectFolder/MyTemplatesApp;
+    }
+
+    location /media/ {
+        root /home/dimoso/mfugajismartDO/MainProjectFolder;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/dimoso/Project.sock;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/mfugajismart.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/mfugajismart.net/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+server {
+    if ($host = www.mfugajismart.net) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = mfugajismart.net) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name mfugajismart.net 137.184.204.91  www.mfugajismart.net;
+    return 404; # managed by Certbot
+
+
+#-------------------------MWISHO HAPA________##########################
 
 
 38. sudo ln -s /etc/nginx/sites-available/mfugajismartDO /etc/nginx/sites-enabled
@@ -275,7 +372,7 @@ ukamake migrations then migrate.
 
 
 
-
+############# KUSET HTTPS-------------------
 
 
 #--------------------------------------
@@ -286,7 +383,7 @@ ukamake migrations then migrate.
 
 -sudo apt install snapd
 -sudo snap install core
--sudo snap refresh core
+-sudo snap refresh core    #ikikataa achana nayo
 -sudo snap install --classic certbot
 -sudo certbot --nginx
 -sudo certbot renew --dry-run
@@ -384,7 +481,7 @@ c07d18 gold
 
  Set Up Cron Job for Daily Execution
 
-
+pip install django-extensions
 
  #----------------------------
 
@@ -397,7 +494,10 @@ Step 2: Add a Cron Job
 Add the following line to the crontab file to run the command every day at a specific time (e.g., 2 AM), tumia masaa 24:
 
 MAILTO="juniordimoso8@gmail.com"
-0 2 * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py check_wateja
+0 11 * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py check_wateja
+0 10 * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript no_rejesho_scheduler
+0 18 * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript no_rejesho_scheduler
+
 
 
 3. Verify Cron Job
@@ -411,4 +511,134 @@ Check if the cron job is scheduled correctly:
 
 
 
+
+TO RUN THE SCRIPT MANUALLY YOU CAN WRITE;
+
+/home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript wateja_schedule
+
+
+hakikisha script (no_rejesho_scheduler.py) yako ipo ndani ya folder la script
+App/
+    script/
+            __init__.py
+            no_rejesho_scheduler.py
+
+KM UNATAKA KURUN KILA BAADA YA DK 5
+*/5 * * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript wateja_schedule
+
+
+
 #---------------------MWISHO------------------------
+
+
+
+
+
+
+
+
+
+
+#############TO DOWNLOAD A PROJECT FROM DIGITAL OCEAN------------------
+
+1.search for git bash and open it.
+
+-dimoso@dimoso MINGW64 ~
+
+2.Run this command
+
+-scp -r root@137.184.204.91:/home/dimoso/mfugajismartDO/MainProjectFolder "/c/Users/DIMOSO JR/Downloads"
+
+
+
+#-------------------------MWISHO-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+#----------------------TO SOLVE THIS ERROR-----------------
+
+########################
+(venv) dimoso@vmi2331811:~/MicrofinanceCo/MainProjectFolder$ git pull
+remote: Enumerating objects: 23, done.
+remote: Counting objects: 100% (23/23), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 17 (delta 3), reused 17 (delta 3), pack-reused 0 (from 0)
+Unpacking objects: 100% (17/17), 2.85 KiB | 972.00 KiB/s, done.
+From https://github.com/dimosojunior/MicrofinanceCo
+   f990683..fedcab5  main       -> origin/main
+Updating f990683..fedcab5
+error: The following untracked working tree files would be overwritten by merge:
+        MainProjectFolder/MyTemplatesApp/__init__.py
+        MainProjectFolder/MyTemplatesApp/admin.py
+        MainProjectFolder/MyTemplatesApp/apps.py
+        MainProjectFolder/MyTemplatesApp/migrations/__init__.py
+        MainProjectFolder/MyTemplatesApp/models.py
+        MainProjectFolder/MyTemplatesApp/tests.py
+        MainProjectFolder/MyTemplatesApp/views.py
+Please move or remove them before you merge.
+Aborting
+(venv) dimoso@vmi2331811:~/MicrofinanceCo/MainProjectFolder$
+
+###########################################
+
+
+-git fetch --all
+-git reset --hard origin/main
+
+
+
+#_________________MWISHO____________________________________________
+
+
+
+
+
+
+#----------------------TO CREATE ENV FILE IN VPS-------------------
+-nano .env
+
+- paste all codes within that file
+
+-Save and Exit by pressing CTRL + O, then press ENTER. Exit by pressing CTRL + X.
+
+
+
+#---------------------MWISHO HAPA--------------------------------------
+
+
+
+
+
+
+
+
+
+#----------------------------CONTABO----------------------
+
+Main Password kwa wote:
+-Dimoso9898
+
+* Password ya ndani
+-Dimoso@9898
+
+#-------------MFUGAJI SMART----------------
+Ip Address: 5.189.183.80
+
+ssh root@5.189.183.80
+
+
+#-------------GEGWAJO MICRIFINANCE----------------
+Ip Address: 198.7.120.209
+
+ssh root@198.7.120.209
+
+-sudo systemctl restart gunicorn
+-sudo systemctl restart nginx

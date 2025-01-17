@@ -17,15 +17,15 @@ class AppConfig(AppConfig):
 	# 	from .marejesho_scheduler import start
 	# 	start()
 
-	def ready(self):
-		from .no_rejesho_scheduler2 import start
+	# def ready(self):
+	# 	from .no_rejesho_scheduler2 import start
 
-		def start_thread():
-		    start()
+	# 	def start_thread():
+	# 	    start()
 
-		thread = threading.Thread(target=start_thread)
-		thread.daemon = True  # Daemonize thread to exit when the main program exits
-		thread.start()
+	# 	thread = threading.Thread(target=start_thread)
+	# 	thread.daemon = True  # Daemonize thread to exit when the main program exits
+	# 	thread.start()
 
 
 	#-------------FOR JOBS.py------------

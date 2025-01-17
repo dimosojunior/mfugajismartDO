@@ -1,73 +1,35 @@
-so as i said i have this file called 'check_wateja.py' which perfom some tasks in my project.
-the structure of this file is like this
+MAILTO="juniordimoso8@gmail.com"
+*/5 * * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript wateja_schedule
+0 7 * * * /home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript no_rejesho_scheduler
 
-App / management /  commands/ check_wateja.py
 
-it looks like this;
-App/
-    management/
-        commands/
-            __init__.py
-            check_wateja.py
 
-so i want to run that file everyday at any time automatically in my digital ocean droplet, so give me all steps need to eneble that file to run everyday at once in a day inorder to perform those functions everyday.
-i'm using postgres database, nginx and gunicorn i my digita ocean droplet.
-my codes file are;
-class Command(BaseCommand):
-    help = 'Check conditions for WatejaWote and send emails.'
 
-    def handle(self, *args, **kwargs):
-        wateja_list = WatejaWote.objects.all()
+/home/dimoso/mfugajismartDO/MainProjectFolder/venv/bin/python /home/dimoso/mfugajismartDO/MainProjectFolder/manage.py runscript wateja_schedule
 
-        for mteja in wateja_list:
-            time_elapsed = (now() - mteja.Created).days
 
-            if time_elapsed == 31 and mteja.Ni_Mteja_Hai:
-                mteja.Ni_Mteja_Hai = False
-                mteja.save(update_fields=['Ni_Mteja_Hai'])
-                self.send_email(mteja, "Ni Mteja Hai condition reached.")
+scp -r dimoso@your_droplet_ip:/home/dimoso/mfugajismartDO/MainProjectFolder /c/Users/DIMOSO JR/Downloads/
+C:\Users\DIMOSO JR\Documents\crud dashboard
 
-            if time_elapsed == 30 and not mteja.Nje_Ya_Mkata_Leo:
-                mteja.Nje_Ya_Mkata_Leo = True
-                mteja.save(update_fields=['Nje_Ya_Mkata_Leo'])
-                self.send_email(mteja, "Nje Ya Mkata Leo condition reached.")
-                self.copy_to_nje_ya_mkataba_copies(mteja)
 
-            if time_elapsed == 31 and mteja.Nje_Ya_Mkata_Leo:
-                mteja.Nje_Ya_Mkata_Leo = False
-                mteja.save(update_fields=['Nje_Ya_Mkata_Leo'])
-                self.send_email(mteja, "Umetoka nje ya mkataba wa siku 30")
+scp -r root@137.184.204.91:/home/dimoso/mfugajismartDO/MainProjectFolder "/c/Users/DIMOSO JR/Downloads"
 
-            if time_elapsed == 31 and not mteja.Nje_Ya_Mkata_Wote:
-                mteja.Nje_Ya_Mkata_Wote = True
-                mteja.save(update_fields=['Nje_Ya_Mkata_Wote'])
-                self.send_email(mteja, "Nje Ya Mkata Wote condition reached.")
+sudo nano /etc/nginx/sites-available/MicrofinanceCo
 
-    def send_email(self, mteja, condition_message):
-        subject = "Notification: Condition Met"
-        message = f"Mteja: {mteja.JinaKamiliLaMteja}\nCondition: {condition_message}"
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [mteja.EmailYaMteja]
-        send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
-    def copy_to_nje_ya_mkataba_copies(self, mteja):
-        # Copy relevant information to NjeYaMkatabaCopies
-        NjeYaMkatabaCopies.objects.create(
-            reg_no=mteja.reg_no,
-            JinaKamiliLaMteja=mteja.JinaKamiliLaMteja,
-            JinaLaKituo=mteja.JinaLaKituo.JinaLaKituo if mteja.JinaLaKituo else None,
-            SimuYaMteja=mteja.SimuYaMteja,
-            EmailYaMteja=mteja.EmailYaMteja,
-            Mahali=mteja.Mahali,
-            KiasiAnachokopa=mteja.KiasiAnachokopa,
-            KiasiAlicholipa=mteja.KiasiAlicholipa,
-            RejeshoKwaSiku=mteja.RejeshoKwaSiku,
-            JumlaYaDeni=mteja.JumlaYaDeni,
-            Riba=mteja.Riba,
-            AmesajiliwaNa=mteja.AmesajiliwaNa,
-            PichaYaMteja=mteja.PichaYaMteja,
-            Ni_Mteja_Hai=mteja.Ni_Mteja_Hai,
-            #Created=mteja.Created,
-            Updated=mteja.Updated,
-            Up_To=mteja.Up_To,
-        )
+sudo ln -s /etc/nginx/sites-available/MicrofinanceCo /etc/nginx/sites-enabled
+
+
+
+/home/dimoso/MicrofinanceCo/MainProjectFolder/venv/bin/python /home/dimoso/MicrofinanceCo/MainProjectFolder/manage.py runscript wateja_schedule
+
+
+*/5 * * * * /home/dimoso/MicrofinanceCo/MainProjectFolder/venv/bin/python /home/dimoso/MicrofinanceCo/MainProjectFolder/manage.py runscript wateja_schedule
+
+
+
+Error occurred: unsupported operand type(s) for +: 'int' and 'NoneType'
+
+
+https://messaging-service.co.tz/api/sms/v1/text/single
+https://messaging-service.co.tz/api/sms/v1/test/text/single

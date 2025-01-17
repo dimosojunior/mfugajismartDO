@@ -52,6 +52,82 @@ from django.core.mail import send_mail
 
 import os
 
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+import requests
+from requests.auth import HTTPBasicAuth  
+import requests
+from django.http import JsonResponse
+#from beem.sms import BeemSms  # Correct import
+
+#from BeemAfrica import Authorize, AirTime, OTP, SMS
+from django.utils.timezone import now
+
+#------------FOR TWILIO
+from twilio.rest import Client
+from dotenv import load_dotenv
+import os
+
+import requests
+
+import base64
+import requests
+
+# Load environment variables
+load_dotenv()
+
+
+
+
+def send_sms(phone_number, message):
+    """
+    Sends an SMS using Beem Africa API.
+    
+    :param phone_number: The recipient's phone number in international format (e.g., +255XXXXXXXXX)
+    :param message: The message to send
+    """
+    url = os.getenv("BEEM_ACCOUNT_URL")
+    api_key = os.getenv("BEEM_ACCOUNT_API_KEY")  # Replace with your Beem Africa API key
+    secret_key = os.getenv("BEEM_ACCOUNT_SECRET_KEY")  # Replace with your Beem Africa secret key
+    sender_id = os.getenv("BEEM_ACCOUNT_SENDER_ID")  # Replace with your approved Sender Name
+
+    # Encode API key and secret key in base64
+    auth_string = f"{api_key}:{secret_key}"
+    auth_bytes = auth_string.encode("utf-8")
+    auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Basic {auth_base64}"
+    }
+    
+    payload = {
+        "source_addr": sender_id,
+        "encoding": 0,
+        "schedule_time": "",
+        "recipients": [{"recipient_id": 1, "dest_addr": phone_number}],
+        "message": message
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+
+        # Debugging: Print response details
+        print(f"sms sends to {phone_number}")
+        print(f"Status Code: {response.status_code}")
+        print(f"Response Content: {response.text}")
+
+        
+        response.raise_for_status()  # Raise an error for HTTP codes 4XX/5XX
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending SMS: {e}")
+        return None
+
+
+
 
 def base(request):
     my_users = MyUser.objects.all().count()
@@ -159,6 +235,15 @@ def WahakikiSignupPage(request):
             email = request.POST.get('email')
             username = request.POST.get('username')
             msajili = request.user.username
+
+            # # Process the phone number to replace leading '0' with '255'
+            # if phone.startswith('0'):
+            #     phone = phone[1:]
+            # else:
+            #     phone = phone
+
+            # # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
 
             
             subject = "Mfugaji Smart"
@@ -569,6 +654,32 @@ def Tuma_KumbushoLaChanjo_Kwa_Wote(request):
             user.day_is_reached = False
             
             user.save()
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            message = f"kesho kutwa ni siku ya kutoa chanjo ya {chanjo_name} kwa {AinaYaKuku}.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            #message = f"Hellow! {username}, kesho kutwa ni siku ya kuwapatia kuku  {chanjo_name} kwa {AinaYaKuku} wenye umri wa siku {UmriWaKukuKwaSiku}. \n Kwa msaada wa kitaalamu juu ya jinsi ya kutoa chanjo hii na kutatua changamoto za kiufugaji, tafadhali piga simu: 0759536085. \n Tunajivunia kuwa na Mfugaji Smart, jukwaa ambalo linaogeza ufanisi wa ufugaji nchini."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
             
 
@@ -1006,7 +1117,8 @@ def Tuma_KumbushoUsafishajiBanda_Kwa_Wote(request):
 
         subject = "Mfugaji Smart"
         if Awamu == 'Maramoja tu':
-            message = f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
+            message = f"Kesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            #message = f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
             recipient_list = [email]
 
             # Mark message as sent
@@ -1015,14 +1127,67 @@ def Tuma_KumbushoUsafishajiBanda_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            message = f"Kesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            #message = f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
             send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True)
 
         elif Awamu == 'Ijirudie':
-            message = f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
+            #message = "Hi"#f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
             recipient_list = [email]
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+
+            #mwanzo wa kutuma sms
+            message = f"Kesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            #message =f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
 
             
@@ -1458,6 +1623,32 @@ def Tuma_KumbushoLaUatamiajiWaMayai_Kwa_Wote(request):
             user.message_is_sent = True
             user.day_is_reached = False
             user.save()
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            message = f"Mayai {KiasiChaMayai}, {JinaLaUlipoYatoaMayai} ya {AinaYaNdege} yataanguliwa siku 3 baada ya leo.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
 
             
@@ -1905,7 +2096,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 1----------------------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -1916,6 +2107,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -1923,7 +2139,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 2----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -1934,6 +2150,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -1941,7 +2182,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 3---------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -1952,13 +2193,38 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             # Send email
             send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True)
 
 
         #-----------------------KUKU WA WIKI 4---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -1969,6 +2235,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -1977,7 +2268,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 5------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -1988,6 +2279,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -1995,7 +2311,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 6-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2006,6 +2322,32 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2014,7 +2356,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 7----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2025,6 +2367,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2033,7 +2400,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 8-----------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2044,6 +2411,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2051,7 +2443,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 9-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2062,6 +2454,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2070,7 +2487,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #--------------------KUKU WA WIKI 10---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2081,6 +2498,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2089,7 +2531,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 11------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2100,6 +2542,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2108,7 +2575,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 12-----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2119,6 +2586,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2126,7 +2618,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------------KUKU WA WIKI 13----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2137,6 +2629,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2144,7 +2661,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------KUKU WA WIKI 14------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2155,6 +2672,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2162,7 +2704,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 15--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2173,6 +2715,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2180,7 +2747,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 16--------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2191,6 +2758,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2198,7 +2790,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 17----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2208,6 +2800,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.message_is_sent = True
             user.day_is_reached = False
             user.save()
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
             
 
@@ -2225,7 +2842,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 1-----------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2235,6 +2852,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.message_is_sent = True
             user.day_is_reached = False
             user.save()
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
             
 
@@ -2243,7 +2885,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 2-------------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2254,6 +2896,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2261,7 +2928,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 3-------------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Finisher feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Finisher feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2272,6 +2939,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2279,7 +2971,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 4--------------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Finisher feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Finisher feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2289,6 +2981,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.message_is_sent = True
             user.day_is_reached = False
             user.save()
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
             
 
@@ -2302,7 +3019,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
         #--------------------MWANZO WA KUKU MWINGINE--------------
         #-----------KUKU WA WIKI 1---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2313,6 +3030,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2320,7 +3062,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------------KUKU WA WIKI 2-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2331,6 +3073,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2338,7 +3105,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 3----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2349,6 +3116,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2356,7 +3148,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 4------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2367,6 +3159,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2374,7 +3191,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 5---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2385,6 +3202,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2392,7 +3234,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 6---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka starter feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Grower feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2403,6 +3245,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2411,7 +3278,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 7-------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2422,6 +3289,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2429,7 +3321,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 8---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2440,6 +3332,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2447,7 +3364,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #--------------KUKU WA WIKI 9-----
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2458,6 +3375,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2466,7 +3408,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 10----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2477,6 +3419,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2484,7 +3451,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 11----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2495,6 +3462,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2502,7 +3494,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 12---
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2513,6 +3505,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2520,7 +3537,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 13--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2531,6 +3548,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2538,7 +3580,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 14----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2549,6 +3591,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2556,7 +3623,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 15--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2567,6 +3634,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2574,7 +3666,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------KUKU WA WIKI 16--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2585,6 +3677,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2592,7 +3709,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 17---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2603,6 +3720,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2611,7 +3753,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 18----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 120 and UmriWaKukuKwaSiku <= 126)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 120 and UmriWaKukuKwaSiku <= 126)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2622,6 +3764,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2630,7 +3797,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 19---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 127 and UmriWaKukuKwaSiku <= 133)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 127 and UmriWaKukuKwaSiku <= 133)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2641,6 +3808,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2648,7 +3840,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 20-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 134 and UmriWaKukuKwaSiku <= 140)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 134 and UmriWaKukuKwaSiku <= 140)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2659,6 +3851,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.day_is_reached = False
             user.save()
 
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
             
 
             # Send email
@@ -2666,7 +3883,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 21-----
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 141 and UmriWaKukuKwaSiku <= 147)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 141 and UmriWaKukuKwaSiku <= 147)):
-            message = f"Hello {username}, ndugu mfugaji smart, baada ya wiki hii, kuanzia wiki ijayo unakumbushwa kubadilisha lishe kutoka Grower feed kwa kundi la kuku waliosajiliwa kama {KundiLaKukuWake} na kuanza kutumia Layer feed mpaka pale utakapokumbushwa kubadilisha tena lishe. Ahsante. \n Aina ya kuku wako {AinaYaKuku}. \n Njia Unayotumia {MfumoWaKufuga}"
+            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2676,6 +3893,31 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
             user.message_is_sent = True
             user.day_is_reached = False
             user.save()
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
             
 
@@ -5021,6 +6263,33 @@ def AllWanunuzi(request,id):
                 message = f"Hello {user.username}, Mfugaji Smart inakutaarifu {user.username} kutoka mkoa wa {user.Mkoa.JinaLaMkoa} wilaya ya {user.Wilaya}. \n {Message}"
                 recipient_list = [user.email]
 
+                phone = user.phone
+
+                # Process the phone number to replace leading '0' with '255'
+                if phone.startswith('0'):
+                    phone = phone[1:]
+                else:
+                    phone = phone
+
+                # Debugging: Print or log the processed phone number
+                # print(f"Processed Phone Number: {phone}")
+
+                #mwanzo wa kutuma sms
+                #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+                phone_number = f"255{phone}"
+
+                sms_response = None
+                try:
+                    sms_response = send_sms(phone_number, message)
+                    if sms_response:
+                        print(f"SMS sent successfully .")
+                    else:
+                        print(f"Failed to send SMS.")
+                except Exception as e:
+                    print(f"Error during SMS sending: {e}")
+
+                #mwisho wa kutuma sms
+
                 
 
                 send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True)
@@ -5121,6 +6390,32 @@ def Tuma_Wanunuzi_Kwa_Wote(request):
             # user.message_is_sent = True
             # user.day_is_reached = False
             # user.save()
+
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
             
 
@@ -6362,6 +7657,8 @@ def AddNewWatejaWote(request, id):
 
             instance.save()
 
+            
+
 
             #SeND EMAIL KWA MTEJA
             subject = "Mfugaji Smart"
@@ -6369,6 +7666,35 @@ def AddNewWatejaWote(request, id):
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [emailYaMteja]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
+            #mwanzo wa kutuma sms
+            phone = phoneYaMteja
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
+
+
+
+            
 
 
 
@@ -6378,6 +7704,31 @@ def AddNewWatejaWote(request, id):
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [Mzalishajiemail]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
+            #mwanzo wa kutuma sms
+            phone = Mzalishajiphone
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
 
             messages.success(request, f"umefanikiwa kumsajili {JinaLaMteja} kama mteja mpya")
@@ -6615,6 +7966,31 @@ def AddNewMatatizoYaWateja(request):
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
+            # Process the phone number to replace leading '0' with '255'
+            if phone.startswith('0'):
+                phone = phone[1:]
+            else:
+                phone = phone
+
+            # Debugging: Print or log the processed phone number
+            # print(f"Processed Phone Number: {phone}")
+
+            #mwanzo wa kutuma sms
+            #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+            phone_number = f"255{phone}"
+
+            sms_response = None
+            try:
+                sms_response = send_sms(phone_number, message)
+                if sms_response:
+                    print(f"SMS sent successfully .")
+                else:
+                    print(f"Failed to send SMS.")
+            except Exception as e:
+                print(f"Error during SMS sending: {e}")
+
+            #mwisho wa kutuma sms
 
 
 
@@ -6997,6 +8373,31 @@ def InformUsersPage(request):
                 from_email = settings.EMAIL_HOST_USER
                 recipient_list = [email]
                 send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
+                #mwanzo wa kutuma sms
+
+                # Process the phone number to replace leading '0' with '255'
+                if phone.startswith('0'):
+                    phone = phone[1:]
+                else:
+                    phone = phone
+
+                # Debugging: Print or log the processed phone number
+                # print(f"Processed Phone Number: {phone}")
+                #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
+                phone_number = f"255{phone}"
+
+                sms_response = None
+                try:
+                    sms_response = send_sms(phone_number, message)
+                    if sms_response:
+                        print(f"SMS sent successfully .")
+                    else:
+                        print(f"Failed to send SMS.")
+                except Exception as e:
+                    print(f"Error during SMS sending: {e}")
+
+                #mwisho wa kutuma sms
                 
 
             
