@@ -665,7 +665,7 @@ def Tuma_KumbushoLaChanjo_Kwa_Wote(request):
             # print(f"Processed Phone Number: {phone}")
 
             #mwanzo wa kutuma sms
-            message = f"kesho kutwa ni siku ya kutoa chanjo ya {chanjo_name} kwa {AinaYaKuku}.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nkesho kutwa ni siku ya kutoa chanjo ya {chanjo_name} kwa {AinaYaKuku}.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             #message = f"Hellow! {username}, kesho kutwa ni siku ya kuwapatia kuku  {chanjo_name} kwa {AinaYaKuku} wenye umri wa siku {UmriWaKukuKwaSiku}. \n Kwa msaada wa kitaalamu juu ya jinsi ya kutoa chanjo hii na kutatua changamoto za kiufugaji, tafadhali piga simu: 0759536085. \n Tunajivunia kuwa na Mfugaji Smart, jukwaa ambalo linaogeza ufanisi wa ufugaji nchini."
             phone_number = f"255{phone}"
 
@@ -1137,7 +1137,7 @@ def Tuma_KumbushoUsafishajiBanda_Kwa_Wote(request):
             # print(f"Processed Phone Number: {phone}")
 
             #mwanzo wa kutuma sms
-            message = f"Kesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nKesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             #message = f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
             phone_number = f"255{phone}"
 
@@ -1173,7 +1173,7 @@ def Tuma_KumbushoUsafishajiBanda_Kwa_Wote(request):
 
 
             #mwanzo wa kutuma sms
-            message = f"Kesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nKesho ni siku ya kufanya usafi bandani.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             #message =f"Hello! {username}, kesho ni siku ya kufanya usafi wa banda lako ili kuimarisha afya ya kuku wako na kudhibiti magonjwa yanayoepukika kwa kuzingatia usafi. \n Ikiwa umechagua kupokea kumbusho hili kwa kujirudia, basi utapata ujumbe wa kumbusho awamu ijayo. \n \n Kampuni ya WASTE-PROTEIN TECH LTD wanakuletea lishe mbadala kwa kuku ambao ni wadudu aina ya Black Soldier Fly Larvae (BSFL). \n Wadudu wenye protini nyingi ambayo huongeza ukuaji kwa mifugo kama vile kuku, samaki, na wengine wanaofugwa. \n Ni rahisi kufuga wadudu hawa pia unaweza kuagiza wadudu walioandaliwa kitaalamu ili kuchanganya kwenye chakula. \n Mawasiliano zaidi piga simu: 0657378672 \n Mfugaji Smart - Fuga Kidijitali."
             phone_number = f"255{phone}"
 
@@ -1634,7 +1634,7 @@ def Tuma_KumbushoLaUatamiajiWaMayai_Kwa_Wote(request):
             # print(f"Processed Phone Number: {phone}")
 
             #mwanzo wa kutuma sms
-            message = f"Mayai {KiasiChaMayai}, {JinaLaUlipoYatoaMayai} ya {AinaYaNdege} yataanguliwa siku 3 baada ya leo.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nMayai {KiasiChaMayai}, {JinaLaUlipoYatoaMayai} ya {AinaYaNdege} yataanguliwa siku 3 baada ya leo.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             #message = f"hellow! {username}, leo ni siku ya {leo_ni_siku_ya}, siku tatu zimebaki kabla ya mayai yako kuanguliwa na kua vifaranga. \n Uliweka mayai {KiasiChaMayai} ya {AinaYaNdege} yaliyokuwa na alama {JinaLaUlipoYatoaMayai}, mayai haya yalikuwa na siku {SikuYaNgapiTokaKuatamiwa} tangu kuanza kuatamiwa wakati unaweka kumbusho hili uatamiaji uliofanywa na {Kifaa} \n Jina la mteja  {JinaLaUlipoYatoaMayai}. \n Mwenye simu namba {NambaYakeYaSimu} \n Tafadhali jiandae mapema kupokea vifaranga wakati wa kuanguliwa \n Kwa msaada, tafadhali wasiliana nasi: 0759536085. \n Mfugaji Smart, Fuga kidijitali."
             phone_number = f"255{phone}"
 
@@ -2096,7 +2096,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 1----------------------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2139,7 +2139,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 2----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2182,7 +2182,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 3---------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2224,7 +2224,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------------KUKU WA WIKI 4---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2268,7 +2268,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 5------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2311,7 +2311,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 6-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2356,7 +2356,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 7----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2400,7 +2400,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 8-----------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2443,7 +2443,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 9-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2487,7 +2487,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #--------------------KUKU WA WIKI 10---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2531,7 +2531,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 11------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2575,7 +2575,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 12-----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2618,7 +2618,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------------KUKU WA WIKI 13----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2661,7 +2661,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------KUKU WA WIKI 14------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2704,7 +2704,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 15--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2747,7 +2747,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #---------------KUKU WA WIKI 16--------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2790,7 +2790,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 17----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku aina ya Kroila" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku wa Mayai (Layers)" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku aina ya Sasso" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku aina ya Tanbro" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119) or (AinaYaKuku == "Kuku aina ya Kenbro" and UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2842,7 +2842,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 1-----------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2885,7 +2885,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 2-------------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2928,7 +2928,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 3-------------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Finisher feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Finisher feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -2971,7 +2971,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 4--------------
         if (time_left == 0) and (AinaYaKuku == "Kuku aina ya Broila (kuku wa nyama)" and UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Finisher feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Finisher feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3019,7 +3019,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
         #--------------------MWANZO WA KUKU MWINGINE--------------
         #-----------KUKU WA WIKI 1---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 0 and UmriWaKukuKwaSiku <= 7)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3062,7 +3062,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------------KUKU WA WIKI 2-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 8 and UmriWaKukuKwaSiku <= 14)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3105,7 +3105,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 3----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 15 and UmriWaKukuKwaSiku <= 21)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3148,7 +3148,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 4------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 22 and UmriWaKukuKwaSiku <= 28)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3191,7 +3191,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 5---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 29 and UmriWaKukuKwaSiku <= 35)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3234,7 +3234,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 6---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 36 and UmriWaKukuKwaSiku <= 42)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka starter feed, anza kutumia Grower feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3278,7 +3278,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------------KUKU WA WIKI 7-------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 43 and UmriWaKukuKwaSiku <= 49)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3321,7 +3321,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-------------KUKU WA WIKI 8---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 50 and UmriWaKukuKwaSiku <= 56)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3364,7 +3364,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #--------------KUKU WA WIKI 9-----
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 57 and UmriWaKukuKwaSiku <= 63)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3408,7 +3408,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 10----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 64 and UmriWaKukuKwaSiku <= 70)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3451,7 +3451,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 11----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 71 and UmriWaKukuKwaSiku <= 77)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3494,7 +3494,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 12---
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 78 and UmriWaKukuKwaSiku <= 84)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3537,7 +3537,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 13--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 85 and UmriWaKukuKwaSiku <= 91)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3580,7 +3580,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 14----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 92 and UmriWaKukuKwaSiku <= 98)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3623,7 +3623,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 15--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 99 and UmriWaKukuKwaSiku <= 105)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3666,7 +3666,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------KUKU WA WIKI 16--------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 106 and UmriWaKukuKwaSiku <= 112)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3709,7 +3709,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 17---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 113 and UmriWaKukuKwaSiku <= 119)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3753,7 +3753,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 18----------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 120 and UmriWaKukuKwaSiku <= 126)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 120 and UmriWaKukuKwaSiku <= 126)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3797,7 +3797,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #----------------KUKU WA WIKI 19---------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 127 and UmriWaKukuKwaSiku <= 133)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 127 and UmriWaKukuKwaSiku <= 133)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3840,7 +3840,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #-----------KUKU WA WIKI 20-------------
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 134 and UmriWaKukuKwaSiku <= 140)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 134 and UmriWaKukuKwaSiku <= 140)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -3883,7 +3883,7 @@ def Tuma_KumbushoLaMabadilikoYaLishe_Kwa_Wote(request):
 
         #------------------KUKU WA WIKI 21-----
         if (time_left == 0) and ((AinaYaKuku == "Kuku wa Malawi") and (UmriWaKukuKwaSiku >= 141 and UmriWaKukuKwaSiku <= 147)) or ((AinaYaKuku == "Kuku wa Kienyeji") and (UmriWaKukuKwaSiku >= 141 and UmriWaKukuKwaSiku <= 147)):
-            message = f"Badili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
+            message = f"Mfugaji Smart!\nBadili lishe ya kuku wa {KundiLaKukuWake} kutoka Grower feed, anza kutumia Layer feed.\nSasa unaweza kuagiza vifaranga bora kutoka Oceanchick, simu 0623046899"
             recipient_list = [email]
 
             # Mark message as sent
@@ -6260,7 +6260,7 @@ def AllWanunuzi(request,id):
         if queryset.exists() and Message:
             for user in queryset:
                 subject = "Mfugaji Smart"
-                message = f"Hello {user.username}, Mfugaji Smart inakutaarifu {user.username} kutoka mkoa wa {user.Mkoa.JinaLaMkoa} wilaya ya {user.Wilaya}. \n {Message}"
+                message = f"Mfugaji Smart!\nHello {user.username}, Mfugaji Smart inakutaarifu {user.username} kutoka mkoa wa {user.Mkoa.JinaLaMkoa} wilaya ya {user.Wilaya}. \n {Message}"
                 recipient_list = [user.email]
 
                 phone = user.phone
@@ -6382,7 +6382,7 @@ def Tuma_Wanunuzi_Kwa_Wote(request):
 
             subject = "Mfugaji Smart"
             
-            message = f"Hello {username}, Mfugaji Smart inakutaarifu {username} kutoka mkoa wa {Mkoa} wilaya ya {Wilaya} . \n {Message}"
+            message = f"Mfugaji Smart!\nHello {username}, Mfugaji Smart inakutaarifu {username} kutoka mkoa wa {Mkoa} wilaya ya {Wilaya} . \n {Message}"
             recipient_list = [email]
 
             # Mark message as sent
@@ -7584,26 +7584,28 @@ def deleteWatejaWote(request, id):
 
 
 def AddNewWatejaWote(request, id):
-    HudumaGET = HudumazaWazalishaji.objects.get(id=id)
+    # HudumaGET = HudumazaWazalishaji.objects.get(id=id)
 
-    HudumaID = HudumaGET.id
-    HudumaJinaLaHuduma = HudumaGET.JinaLaHuduma
-    HudumaTotalPrice = HudumaGET.TotalPrice
+    # HudumaID = HudumaGET.id
+    # HudumaJinaLaHuduma = HudumaGET.JinaLaHuduma
+
+    # HudumaTotalPriceForSingleObject = HudumaGET.TotalPrice
+    # # HudumaTotalPrice = HudumaGET.TotalPrice
     
     
 
-    request.session['HudumaID'] = HudumaID
-    request.session['HudumaJinaLaHuduma'] = HudumaJinaLaHuduma
-    request.session['HudumaTotalPrice'] = HudumaTotalPrice
+    # request.session['HudumaID'] = HudumaID
+    # request.session['HudumaJinaLaHuduma'] = HudumaJinaLaHuduma
+    # request.session['HudumaTotalPrice'] = HudumaTotalPrice
 
-    #---------GET Taarifa za mzalishaji
-    MzalishajiID = request.session.get('MzalishajiID', '')
+    # #---------GET Taarifa za mzalishaji
+    # MzalishajiID = request.session.get('MzalishajiID', '')
     Mzalishajiusername = request.session.get('Mzalishajiusername', '')
-    Mzalishajiphone = request.session.get('Mzalishajiphone', '')
-    Mzalishajiemail = request.session.get('Mzalishajiemail', '')
-    MzalishajiMkoa = request.session.get('MzalishajiMkoa', '')
-    MzalishajiWilaya = request.session.get('MzalishajiWilaya', '')
-    Mzalishajicompany_name = request.session.get('Mzalishajicompany_name', '')
+    # Mzalishajiphone = request.session.get('Mzalishajiphone', '')
+    # Mzalishajiemail = request.session.get('Mzalishajiemail', '')
+    # MzalishajiMkoa = request.session.get('MzalishajiMkoa', '')
+    # MzalishajiWilaya = request.session.get('MzalishajiWilaya', '')
+    # Mzalishajicompany_name = request.session.get('Mzalishajicompany_name', '')
 
     
     
@@ -7619,6 +7621,36 @@ def AddNewWatejaWote(request, id):
         #MkoaWaMteja = request.POST.get('MkoaWaMteja')
         WilayaYaMteja = request.POST.get('WilayaYaMteja')
 
+        IdadiYaJumla = request.POST.get('IdadiYaJumla')
+        Kiasi_Au_Idadi = request.POST.get('Kiasi_Au_Idadi')
+
+
+        HudumaGET = HudumazaWazalishaji.objects.get(id=id)
+
+        HudumaID = HudumaGET.id
+        HudumaJinaLaHuduma = HudumaGET.JinaLaHuduma
+
+        HudumaTotalPriceForSingleObject = HudumaGET.TotalPrice
+        # HudumaTotalPrice = HudumaGET.TotalPrice
+        HudumaTotalPrice = int(IdadiYaJumla) * int(HudumaTotalPriceForSingleObject)
+        
+        
+
+        request.session['HudumaID'] = HudumaID
+        request.session['HudumaJinaLaHuduma'] = HudumaJinaLaHuduma
+        request.session['HudumaTotalPrice'] = HudumaTotalPrice
+
+        #---------GET Taarifa za mzalishaji
+        MzalishajiID = request.session.get('MzalishajiID', '')
+        Mzalishajiusername = request.session.get('Mzalishajiusername', '')
+        Mzalishajiphone = request.session.get('Mzalishajiphone', '')
+        Mzalishajiemail = request.session.get('Mzalishajiemail', '')
+        MzalishajiMkoa = request.session.get('MzalishajiMkoa', '')
+        MzalishajiWilaya = request.session.get('MzalishajiWilaya', '')
+        Mzalishajicompany_name = request.session.get('Mzalishajicompany_name', '')
+
+        
+
         # Retrieve the related Mikoa instance using the ID
         MkoaWaMteja_id = request.POST.get('MkoaWaMteja')  # This gets the ID from the form
         try:
@@ -7633,6 +7665,8 @@ def AddNewWatejaWote(request, id):
 
         if form.is_valid():
             #form.save()
+
+
             
             instance = form.save(commit=False)
 
@@ -7662,7 +7696,8 @@ def AddNewWatejaWote(request, id):
 
             #SeND EMAIL KWA MTEJA
             subject = "Mfugaji Smart"
-            message = f"Hongera! {JinaLaMteja}, Oda yako imepokelewa leo, utapokea oda yako ya {HudumaJinaLaHuduma} kutoka kwa mzalishaji {Mzalishajiusername} siku {SikuYaKupokea} baada ya leo. \n Maelezo kamili ya huduma. \n Jina la mtoa huduma: {Mzalishajiusername} \n Namba ya simu ya mtoa huduma:{Mzalishajiphone} \n Mkoa: {MzalishajiMkoa} \n Wilaya: {MzalishajiWilaya} \n Bei Ya Jumla {HudumaTotalPrice} \n Kiasi Ulicholipa: {PaidAmount} \n Kiasi kilichobaki: {Remained_Display_Value}"
+            message = f"Mfugaji Smart!\nMfugaji Smart!\nOda yako imepokelewa leo. Utapokea oda ya {HudumaJinaLaHuduma} ({Kiasi_Au_Idadi}) siku {SikuYaKupokea} baada ya leo.\nJumla: {HudumaTotalPrice}, Amelipa: {PaidAmount}, Deni: {Remained_Display_Value}\nMaelezo kamili ya mtoa huduma\nJina: {Mzalishajiusername}, Simu: {Mzalishajiphone}, Mkoa: {MzalishajiMkoa}, Wilaya: {MzalishajiWilaya}"
+            #message = f"Hongera! {JinaLaMteja}, Oda yako imepokelewa leo, utapokea oda yako ya {HudumaJinaLaHuduma} kutoka kwa mzalishaji {Mzalishajiusername} siku {SikuYaKupokea} baada ya leo. \n Maelezo kamili ya huduma. \n Jina la mtoa huduma: {Mzalishajiusername} \n Namba ya simu ya mtoa huduma:{Mzalishajiphone} \n Mkoa: {MzalishajiMkoa} \n Wilaya: {MzalishajiWilaya} \n Bei Ya Jumla {HudumaTotalPrice} \n Kiasi Ulicholipa: {PaidAmount} \n Kiasi kilichobaki: {Remained_Display_Value}"
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [emailYaMteja]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
@@ -7700,7 +7735,8 @@ def AddNewWatejaWote(request, id):
 
             #SeND EMAIL KWA MZALISHAJI
             subject = "Mfugaji Smart"
-            message = f"Tunakutaarifu kuwa mteja mwenye jina {JinaLaMteja} ameweka oda yake leo ya kuhitaji huduma hii, {HudumaJinaLaHuduma} siku {SikuYaKupokea} baada ya leo. \n Maelezo kamili ya huduma. \n Jina la mteja: {JinaLaMteja} \n Namba ya simu ya mteja:{phoneYaMteja} \n Mkoa: {MkoaWaMteja_name} \n Wilaya: {WilayaYaMteja} \n Bei Ya Jumla {HudumaTotalPrice} \n Kiasi Alicholipa: {PaidAmount} \n Kiasi Anachodaiwa: {Remained_Display_Value}"
+            message = f"Mfugaji Smart!\nMfugaji Smart!\nMteja {JinaLaMteja} ({phoneYaMteja}) amelipia oda ya {HudumaJinaLaHuduma} ({Kiasi_Au_Idadi}) leo. Atapokea baada ya siku {SikuYaKupokea}\nJumla: {HudumaTotalPrice}, Amelipa: {PaidAmount}, Deni: {Remained_Display_Value}, Mkoa: {MkoaWaMteja_name}, Wilaya: {WilayaYaMteja}"
+            #message = f"Tunakutaarifu kuwa mteja mwenye jina {JinaLaMteja} ameweka oda yake leo ya kuhitaji huduma hii, {HudumaJinaLaHuduma} siku {SikuYaKupokea} baada ya leo. \n Maelezo kamili ya huduma. \n Jina la mteja: {JinaLaMteja} \n Namba ya simu ya mteja:{phoneYaMteja} \n Mkoa: {MkoaWaMteja_name} \n Wilaya: {WilayaYaMteja} \n Bei Ya Jumla {HudumaTotalPrice} \n Kiasi Alicholipa: {PaidAmount} \n Kiasi Anachodaiwa: {Remained_Display_Value}"
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [Mzalishajiemail]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
@@ -7962,7 +7998,7 @@ def AddNewMatatizoYaWateja(request):
 
             #SeND EMAIL KWA MTEJA
             subject = "Mfugaji Smart"
-            message = f"Tunakushukuru! {JinaLaMteja}, kwa kutuambia tatizo unaloliona kutoka kwenye programu yetu ya Mfugaji Smart. \n Tunakuahidi kulifanyia kazi changamoto yako uliyotuambia, endelea kufurahia huduma zetu ndani ya programu ya Mfugaji Smart"
+            message = f"Mfugaji Smart!\nTunakushukuru! {JinaLaMteja}, kwa kutuambia tatizo unaloliona kutoka kwenye programu yetu ya Mfugaji Smart. \n Tunakuahidi kulifanyia kazi changamoto yako uliyotuambia, endelea kufurahia huduma zetu ndani ya programu ya Mfugaji Smart"
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
@@ -8369,7 +8405,7 @@ def InformUsersPage(request):
                 phone = x.phone
 
                 subject = "Mfugaji Smart"
-                message = f"Hello {username} \n. {SentMessage}"
+                message = f"Mfugaji Smart!\nHello {username} \n. {SentMessage}"
                 from_email = settings.EMAIL_HOST_USER
                 recipient_list = [email]
                 send_mail(subject, message, from_email, recipient_list, fail_silently=True)

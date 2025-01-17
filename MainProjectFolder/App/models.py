@@ -668,6 +668,10 @@ class WatejaWote(models.Model):
     PichaYaMteja = models.ImageField(upload_to='media/',verbose_name="Picha Ya Mteja", blank=True, null=True)
     is_checked = models.BooleanField(blank=True,null=True, default=False)
 
+    Kiasi_Au_Idadi = models.CharField(verbose_name="Unit",max_length=100, blank=True,null=True)
+
+    IdadiYaJumla = models.IntegerField(verbose_name="Idadi", default=1, blank=True,null=True)
+
     TotalAmount = models.IntegerField(verbose_name="Kiasi Cha Jumla", default=0, blank=True,null=True)
 
     PaidAmount = models.IntegerField(verbose_name="Kiasi Alicholipa", default=0, blank=True,null=True)

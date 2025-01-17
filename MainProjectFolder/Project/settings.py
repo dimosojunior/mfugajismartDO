@@ -117,16 +117,6 @@ DATABASES = {
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'microfinancedb',
-#         'USER':'microfinance',
-#         'PASSWORD':'Dimoso@9898',
-#         'HOST':'localhost',
-#         'PORT':'',
-#     }
-# }
 
 
 
