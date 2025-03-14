@@ -758,3 +758,10 @@ class InformUsersForm(forms.ModelForm):
     class Meta:
         model = InformUsers
         fields ='__all__'
+
+
+
+class SmsToParticularUsersForm(forms.ModelForm):
+    class Meta:
+        model = SmsToParticularUsers
+        fields ='__all__'

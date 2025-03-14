@@ -463,6 +463,12 @@ class InformUsersAdmin(ImportExportModelAdmin):
     list_filter =["post_date"]
     search_fields = ["SentMessage"]
 
+@admin.register(SmsToParticularUsers)
+class SmsToParticularUsersAdmin(ImportExportModelAdmin):
+    list_display = ["id","Title", "SentMessage","JinaKamiliLaMteja","SimuYaMteja","Mahali","post_date"]
+    list_filter =["post_date"]
+    search_fields = ["Title"]
+
 
 #----------------MWISHO WA BASA KUKU-----------------------------
 

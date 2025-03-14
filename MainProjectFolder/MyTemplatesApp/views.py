@@ -129,6 +129,89 @@ def send_sms(phone_number, message):
 
 
 
+
+
+
+
+
+
+
+
+def SendSmsToParticularUsers(request):
+    form = SmsToParticularUsersForm()
+    queryset = MyUser.objects.all()
+    uliowatumia_ujumbe = SmsToParticularUsers.objects.all().count()
+    count_users = queryset.count()
+
+    # Tafuta mtumiaji kwa username
+    search_query = request.GET.get('search_username', '')
+    if search_query:
+        queryset = queryset.filter(username__icontains=search_query)
+
+    if request.method == 'POST':
+        form = SmsToParticularUsersForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['Title']
+            message = form.cleaned_data['SentMessage']
+            selected_users = request.POST.getlist('selected_users[]') 
+            users_to_notify = MyUser.objects.filter(id__in=selected_users)
+
+            if users_to_notify.exists():
+                for user in users_to_notify:
+                    phone = user.phone.lstrip('0')  
+                    phone_number = f"255{phone}"
+                    try:
+                        sms_response = send_sms(phone_number, f"Hello {user.username}, {message}")
+                        if sms_response:
+                            print(f"SMS sent successfully to {user.username}.")
+                        else:
+                            print(f"Failed to send SMS to {user.username}.")
+                    except Exception as e:
+                        print(f"Error during SMS sending to {user.username}: {e}")
+
+                    send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=True)
+
+                    SmsToParticularUsers.objects.create(
+                        Title=title, 
+                        SentMessage=message,
+                        JinaKamiliLaMteja=user.username,
+                        SimuYaMteja=user.phone,
+                        Mahali=user.Location
+                    )
+
+                messages.success(request, "SMS sent successfully to selected users.")
+            else:
+                messages.error(request, "No users selected!")
+
+            return redirect('SendSmsToParticularUsers')
+
+    context = {
+        "form": form,
+        "queryset": queryset,
+        "count_users": count_users,
+        "uliowatumia_ujumbe": uliowatumia_ujumbe,
+        "search_query": search_query,  # Rudisha utafutaji kwenye template
+    }
+    return render(request, 'MyTemplatesApp/SendSmsToParticularUsers.html', context)
+
+
+
+def WoteUliowatumiaUjumbeBaadhiYaWatumiaji(request):
+    form = SmsToParticularUsersForm()
+    queryset = SmsToParticularUsers.objects.all().order_by('-post_date')
+    uliowatumia_ujumbe = SmsToParticularUsers.objects.all().count()
+    count_users = MyUser.objects.all().count()
+
+
+    context = {
+        "form": form,
+        "queryset": queryset,
+        "count_users":count_users,
+        "uliowatumia_ujumbe":uliowatumia_ujumbe,
+    }
+    return render(request, 'MyTemplatesApp/WoteUliowatumiaUjumbeBaadhiYaWatumiaji.html', context)
+
+
 def base(request):
     my_users = MyUser.objects.all().count()
 
@@ -6260,7 +6343,7 @@ def AllWanunuzi(request,id):
         if queryset.exists() and Message:
             for user in queryset:
                 subject = "Mfugaji Smart"
-                message = f"Hello {user.username}, Mfugaji Smart inakutaarifu {user.username} kutoka mkoa wa {user.Mkoa.JinaLaMkoa} wilaya ya {user.Wilaya}. \n {Message}"
+                message = f"Hello {user.username} \n {Message}"
                 recipient_list = [user.email]
 
                 phone = user.phone

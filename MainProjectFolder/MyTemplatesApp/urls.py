@@ -9,6 +9,8 @@ urlpatterns = [
 
     #---------------KWA AJILI YA APIS --------------
     #path('', views.home, name='home'),
+    path('SendSmsToParticularUsers/', views.SendSmsToParticularUsers, name='SendSmsToParticularUsers'),
+    path('WoteUliowatumiaUjumbeBaadhiYaWatumiaji/', views.WoteUliowatumiaUjumbeBaadhiYaWatumiaji, name='WoteUliowatumiaUjumbeBaadhiYaWatumiaji'),
     path('base/', views.base, name='base'),
     path('', views.Mylogin_user, name='Mylogin_user'),
     path('WahakikiSignupPage/', views.WahakikiSignupPage, name='WahakikiSignupPage'),
