@@ -106,6 +106,90 @@ from rest_framework.authtoken.models import Token
 
 import os
 
+from drf_yasg.utils import swagger_auto_schema
+
+from rest_framework import generics,status
+from rest_framework.decorators import api_view
+from django.db.models import Sum
+from django.db import transaction
+
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+
+import requests
+from requests.auth import HTTPBasicAuth  
+import requests
+from django.http import JsonResponse
+#from beem.sms import BeemSms  # Correct import
+
+#from BeemAfrica import Authorize, AirTime, OTP, SMS
+from django.utils.timezone import now
+
+#------------FOR TWILIO
+from twilio.rest import Client
+from dotenv import load_dotenv
+import os
+
+import requests
+
+import base64
+import requests
+
+# Load environment variables
+load_dotenv()
+
+
+
+
+
+
+def send_sms(phone_number, message):
+    """
+    Sends an SMS using Beem Africa API.
+    
+    :param phone_number: The recipient's phone number in international format (e.g., +255XXXXXXXXX)
+    :param message: The message to send
+    """
+    url = os.getenv("BEEM_ACCOUNT_URL")
+    api_key = os.getenv("BEEM_ACCOUNT_API_KEY")  # Replace with your Beem Africa API key
+    secret_key = os.getenv("BEEM_ACCOUNT_SECRET_KEY")  # Replace with your Beem Africa secret key
+    sender_id = os.getenv("BEEM_ACCOUNT_SENDER_ID")  # Replace with your approved Sender Name
+
+    # Encode API key and secret key in base64
+    auth_string = f"{api_key}:{secret_key}"
+    auth_bytes = auth_string.encode("utf-8")
+    auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Basic {auth_base64}"
+    }
+    
+    payload = {
+        "source_addr": sender_id,
+        "encoding": 0,
+        "schedule_time": "",
+        "recipients": [{"recipient_id": 1, "dest_addr": phone_number}],
+        "message": message
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+
+        # Debugging: Print response details
+        print(f"sms sends to {phone_number}")
+        print(f"Status Code: {response.status_code}")
+        print(f"Response Content: {response.text}")
+
+        
+        response.raise_for_status()  # Raise an error for HTTP codes 4XX/5XX
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending SMS: {e}")
+        return None
+
 
 
 
@@ -340,7 +424,18 @@ class SendOTPView(APIView):
             recipient_list = [user.email]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
             
+            phone = user.phone.lstrip('0')  
+            phone_number = f"255{phone}"
+            try:
+                sms_response = send_sms(phone_number, f"Hello {user.username}, {message}")
+                if sms_response:
+                    print(f"SMS sent successfully to {user.username}.")
+                else:
+                    print(f"Failed to send SMS to {user.username}.")
+            except Exception as e:
+                print(f"Error during SMS sending to {user.username}: {e}")
 
+                
             print(f"OTP : {otp_instance.otp}")
 
             return Response({'message': 'OTP codes zimetumwa kwenye email yako.'}, status=status.HTTP_200_OK)
