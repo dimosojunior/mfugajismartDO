@@ -2545,6 +2545,26 @@ class InformUsers(models.Model):
 
 
 
+class SmsToParticularUsers(models.Model):
+    Title = models.CharField(verbose_name="Ujumbe unahusiana na ?", max_length=1000, blank=True, null=True)
+    SentMessage = models.TextField(max_length=10000, verbose_name="Ujumbe", blank=True, null=True)     
+    post_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
+    JinaKamiliLaMteja = models.CharField(verbose_name="Jina Kamili La Mteja", max_length=500, blank=True, null=True)
+    #JinaLaKituo = models.CharField(verbose_name="Jina La Kituo Cha Mteja", max_length=500, blank=True, null=True)
+    #JinaLaKituo = models.ForeignKey(VituoVyote, on_delete=models.PROTECT, blank=True, null=True)
+    SimuYaMteja = models.IntegerField(verbose_name="Namba Ya Simu Ya Mteja", blank=True, null=True)
+    #EmailYaMteja = models.EmailField(verbose_name="Email Ya Mteja", max_length=500, blank=True, null=True)
+    Mahali = models.CharField(verbose_name="Mahali Anapoishi", max_length=500, blank=True, null=True)
+
+    def __str__(self):
+        return self.Title 
+
+    class Meta:
+        verbose_name_plural = "Sms To Particular Users"
+
+
+
 
 
 
