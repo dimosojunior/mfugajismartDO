@@ -1644,8 +1644,8 @@ class GetAllDukaLakoView(APIView):
 
             #orders = HotelOrder.objects.all().order_by('-id')
             #CategoryId = int(request.query_params.get('CategoryId'))
-            queryset = DukaLako.objects.filter(
-                Status__Status="Approved"
+            queryset = DukaLako.objects.all(
+                #Status__Status="Approved"
                 #username=user
                 #closed_order_state=False
                 # CategoryId=CategoryId

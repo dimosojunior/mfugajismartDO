@@ -8081,7 +8081,7 @@ def AddNewMatatizoYaWateja(request):
 
             #SeND EMAIL KWA MTEJA
             subject = "Mfugaji Smart"
-            message = f"Tunakushukuru! {JinaLaMteja}, kwa kutuambia tatizo unaloliona kutoka kwenye programu yetu ya Mfugaji Smart. \n Tunakuahidi kulifanyia kazi changamoto yako uliyotuambia, endelea kufurahia huduma zetu ndani ya programu ya Mfugaji Smart"
+            message = f"Tunakushukuru! {JinaLaMteja}, kwa kuwasiliana nasi, tunaahidi kukupa huduma nzuri zaidi. Endelea kufuga kidigitali na Mfugaji Smart App."
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
