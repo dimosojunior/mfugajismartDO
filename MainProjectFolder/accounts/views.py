@@ -243,11 +243,21 @@ class RegistrationView(APIView):
             phone = serializer.validated_data.get('phone')
             expo_push_token = request.data.get('expo_push_token')  # Get Expo push token from request
 
+            Mkoa_id = request.data.get('Mkoa')
+
             # Check if email or username already exists
             if MyUser.objects.filter(email=email).exists():
                 return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
             if MyUser.objects.filter(username=username).exists():
                 return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+            Mkoa = None
+            if Mkoa_id:
+                try:
+                    Mkoa = Mikoa.objects.get(id=Mkoa_id)
+                except Mikoa.DoesNotExist:
+                    return Response({'error': 'Invalid Mkoa ID'}, status=status.HTTP_400_BAD_REQUEST)
+
 
             # Create user
             user = MyUser.objects.create_user(
@@ -255,6 +265,7 @@ class RegistrationView(APIView):
                 password=password, 
                 username=username, 
                 phone=phone,
+                Mkoa=Mkoa,
                 expo_push_token=expo_push_token  # Save Expo push token
             )
             if user:
