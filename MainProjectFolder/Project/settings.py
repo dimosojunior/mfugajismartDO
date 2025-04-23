@@ -31,7 +31,7 @@ load_dotenv()
 SECRET_KEY = "x*za6xf&_80ofdpae!yzq61g9ffikkx9$*iygbl$j7rr4wlf8t" #os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','5.189.183.80','127.0.0.1','mfugajismart.net','www.mfugajismart.net','137.184.204.91']
 #ALLOWED_HOSTS = ['localhost','127.0.0.1']
