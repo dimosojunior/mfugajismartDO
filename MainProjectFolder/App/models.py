@@ -364,7 +364,7 @@ class KumbushoUsafishajiBanda(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username,phone,expo_push_token=None, password=None):
+    def create_user(self, email, username,phone,expo_push_token=None,Mkoa=None, password=None):
         if not email:
             raise ValueError("email is required")
         if not username:
@@ -381,6 +381,7 @@ class MyUserManager(BaseUserManager):
             username=username,
             phone=phone,
             expo_push_token=expo_push_token,
+            Mkoa=Mkoa,
             
             
         )
@@ -393,6 +394,7 @@ class MyUserManager(BaseUserManager):
             username=username,
             password=password,
             phone=phone,
+            Mkoa=None,
             expo_push_token=None  # Superuser doesn't require expo_push_token
             
 
@@ -410,10 +412,10 @@ class MyUserManager(BaseUserManager):
   
 class MyUser(AbstractBaseUser):
     email=models.EmailField(verbose_name="email", max_length=100, unique=True)
-    first_name=models.CharField(verbose_name="first name", max_length=100, unique=False)
+    #first_name=models.CharField(verbose_name="first name", max_length=100, unique=False)
     username=models.CharField(verbose_name="user name", max_length=100, unique=True)
-    middle_name=models.CharField(verbose_name="middle name", max_length=100, unique=False)
-    last_name=models.CharField(verbose_name="last name", max_length=100, unique=False)
+    #middle_name=models.CharField(verbose_name="middle name", max_length=100, unique=False)
+    #last_name=models.CharField(verbose_name="last name", max_length=100, unique=False)
     company_name=models.CharField(verbose_name="company name",blank=True,null=True, max_length=500, unique=False)
     phone=models.CharField(verbose_name="phone", max_length=10)
     Location=models.CharField(verbose_name="Mahali", max_length=200, blank=True, null=True)

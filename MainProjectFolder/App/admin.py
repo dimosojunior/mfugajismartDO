@@ -7,7 +7,7 @@ from import_export.admin import ImportExportModelAdmin
 @admin.register(MyUser)
 class MyUserAdmin(ImportExportModelAdmin):
     list_display=('username', 'email', 'phone', 'date_joined', 'last_login', 'is_admin', 'is_active')
-    search_fields=('email', 'first_name', 'last_name')
+    search_fields=('email', 'username')
     readonly_fields=('date_joined', 'last_login')
     filter_horizontal=()
     list_filter=('date_joined',)
@@ -16,7 +16,7 @@ class MyUserAdmin(ImportExportModelAdmin):
     add_fieldsets=(
         (None,{
             'classes':('wide'),
-            'fields':('email', 'username','phone', 'first_name', 'middle_name', 'last_name', 'company_name', 'phone', 'password1', 'password2'),
+            'fields':('email', 'username','phone', 'company_name', 'phone', 'password1', 'password2'),
         }),
     )
 
