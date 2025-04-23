@@ -26,6 +26,12 @@ class AinaZaKuku(models.Model):
     #hivi ni vipindi vya chakula vinavyoanza mpk vinapoishia
     #na vinachukua interval gani na kwa wiki ngapi kulingana
     #na aina ya kuku
+    BeiYaKiloMoja_StarterFeed = models.IntegerField(verbose_name="Bei Ya Kilo Moja Chakula Cha Stater", default=0, blank=True,null=True)
+    BeiYaKiloMoja_GrowerFeed = models.IntegerField(verbose_name="Bei Ya Kilo Moja Chakula Cha Grower", default=0, blank=True,null=True)
+    BeiYaKiloMoja_LayerFeed = models.IntegerField(verbose_name="Bei Ya Kilo Moja Chakula Cha Layer", default=0, blank=True,null=True)
+    BeiYaKiloMoja_FinisherFeed = models.IntegerField(verbose_name="Bei Ya Kilo Moja Chakula Cha Finisher", default=0, blank=True,null=True)
+
+
     StaterFeed = models.CharField(verbose_name="Stater Feed",max_length=200, blank=True,null=True)
     GrowerFeed = models.CharField(verbose_name="Grower Feed",max_length=200, blank=True,null=True)
     FinisherFeed = models.CharField(verbose_name="Finisher Feed",max_length=200, blank=True,null=True)

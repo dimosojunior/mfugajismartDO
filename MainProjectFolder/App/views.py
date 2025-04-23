@@ -1,7 +1,6 @@
 
 
 
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -2302,6 +2301,12 @@ class GetTaarifaZaKukuByCategoryZaAinaYaKukuNaUmriWaKukuView(APIView):
             # Get the page number from the query parameters, default to 1
             page = int(request.query_params.get('page', 1))
             page_size = int(request.query_params.get('page_size', 5))  # Adjust page size as needed
+
+            BeiYaKiloMoja_StarterFeed = int(request.query_params.get('BeiYaKiloMoja_StarterFeed'))
+            BeiYaKiloMoja_GrowerFeed = int(request.query_params.get('BeiYaKiloMoja_GrowerFeed'))
+            BeiYaKiloMoja_LayerFeed = int(request.query_params.get('BeiYaKiloMoja_LayerFeed'))
+            BeiYaKiloMoja_FinisherFeed = int(request.query_params.get('BeiYaKiloMoja_FinisherFeed'))
+
             
             AinaYaKuku_ID = int(request.query_params.get('KukuId'))
             AinaYaKuku_Name = request.query_params.get('AinaYaKuku_Name')
@@ -2563,6 +2568,12 @@ class GetTaarifaZaKukuByCategoryZaAinaYaKukuNaUmriWaKukuView(APIView):
             Layer_Kwa_Wiki = 0
             Finisher_Kwa_Wiki = 0
             Remained_Days_For_Lasr_Week = 0
+
+            BeiYaTotalStarterFeed = 0
+            BeiYaTotalGrowerFeed = 0
+            BeiYaTotalLayerFeed = 0
+            BeiYaTotalFinisherFeed = 0
+            BeiYaTotalFeeds = 0
 
 
 
@@ -21303,6 +21314,22 @@ class GetTaarifaZaKukuByCategoryZaAinaYaKukuNaUmriWaKukuView(APIView):
 
 
 
+                #------------------BEI YA KILA KIPINDI----------------
+                BeiYaTotalStarterFeed = int(TotalStarterFeed * BeiYaKiloMoja_StarterFeed)
+                BeiYaTotalGrowerFeed = int(TotalGrowerFeed * BeiYaKiloMoja_GrowerFeed)
+                BeiYaTotalLayerFeed = int(TotalLayerFeed * BeiYaKiloMoja_LayerFeed)
+                BeiYaTotalFinisherFeed = int(TotalFinisherFeed * BeiYaKiloMoja_FinisherFeed)
+
+                BeiYaTotalFeeds = int(
+                    BeiYaTotalStarterFeed +
+                    BeiYaTotalGrowerFeed +
+                    BeiYaTotalLayerFeed +
+                    BeiYaTotalFinisherFeed
+                )
+
+
+
+
                 # print(f"Jumla Wiki:: {JumlaKiasiChaChakulaKwaWikiZote_KwaAinaYaKuku}")
                 # print(f"Jumla Siku:: {JumlaKiasiChaChakulaKwaSikuZote_KwaAinaYaKuku}")
 
@@ -21323,6 +21350,12 @@ class GetTaarifaZaKukuByCategoryZaAinaYaKukuNaUmriWaKukuView(APIView):
                 # 'total_Kilos_needed':total_Kilos_needed,
                 # 'total_Kilos_needed_Based_on_Aina_Umri_WaKuku':total_Kilos_needed_Based_on_Aina_Umri_WaKuku,
                 # 'score_count':score_count,
+                'BeiYaTotalStarterFeed':BeiYaTotalStarterFeed,
+                'BeiYaTotalGrowerFeed':BeiYaTotalGrowerFeed,
+                'BeiYaTotalLayerFeed':BeiYaTotalLayerFeed,
+                'BeiYaTotalFinisherFeed':BeiYaTotalFinisherFeed,
+                'BeiYaTotalFeeds':BeiYaTotalFeeds,
+
                 'TotalStarterFeed':TotalStarterFeed,
                 'TotalGrowerFeed':TotalGrowerFeed,
                 'TotalLayerFeed':TotalLayerFeed,

@@ -1,0 +1,71 @@
+now i'm getting this 'Server Error (500)'
+my views.py codes are;
+
+def SendSmsToParticularUsers(request):
+    form = SmsToParticularUsersForm()
+    # queryset = MyUser.objects.all().order_by('-Mkoa')
+    #queryset = MyUser.objects.annotate(has_mkoa=Coalesce(F('Mkoa_id'), Value(False))).order_by('has_mkoa', 'Mkoa__JinaLaMkoa')
+    queryset = MyUser.objects.annotate(
+    has_mkoa=Case(
+        When(Mkoa__isnull=True, then=Value(1)),
+        default=Value(0),
+        output_field=IntegerField(),
+    )
+    ).order_by('has_mkoa', 'Mkoa__JinaLaMkoa')
+
+    uliowatumia_ujumbe = SmsToParticularUsers.objects.all().count()
+    count_users = queryset.count()
+
+    # Tafuta mtumiaji kwa username
+    search_query = request.GET.get('search_username', '')
+    if search_query:
+        queryset = queryset.filter(username__icontains=search_query)
+
+    if request.method == 'POST':
+        form = SmsToParticularUsersForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['Title']
+            message = form.cleaned_data['SentMessage']
+            selected_users = request.POST.getlist('selected_users[]') 
+            users_to_notify = MyUser.objects.filter(id__in=selected_users)
+
+            if users_to_notify.exists():
+                for user in users_to_notify:
+                    phone = user.phone.lstrip('0')  
+                    phone_number = f"255{phone}"
+                    try:
+                        sms_response = send_sms(phone_number, f"Hello {user.username}, {message}")
+                        if sms_response:
+                            print(f"SMS sent successfully to {user.username}.")
+                        else:
+                            print(f"Failed to send SMS to {user.username}.")
+                    except Exception as e:
+                        print(f"Error during SMS sending to {user.username}: {e}")
+
+                    send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=True)
+
+                    SmsToParticularUsers.objects.create(
+                        Title=title, 
+                        SentMessage=message,
+                        JinaKamiliLaMteja=user.username,
+                        SimuYaMteja=user.phone,
+                        Mahali=user.Location
+                    )
+
+                messages.success(request, "SMS sent successfully to selected users.")
+            else:
+                messages.error(request, "No users selected!")
+
+            return redirect('SendSmsToParticularUsers')
+
+    context = {
+        "form": form,
+        "queryset": queryset,
+        "count_users": count_users,
+        "uliowatumia_ujumbe": uliowatumia_ujumbe,
+        "search_query": search_query,  # Rudisha utafutaji kwenye template
+    }
+    return render(request, 'MyTemplatesApp/SendSmsToParticularUsers.html', context)
+
+
+   please orders those users in ascending order please

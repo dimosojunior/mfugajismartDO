@@ -61,6 +61,8 @@ from requests.auth import HTTPBasicAuth
 import requests
 from django.http import JsonResponse
 #from beem.sms import BeemSms  # Correct import
+from django.db.models import F, Value
+from django.db.models.functions import Coalesce
 
 #from BeemAfrica import Authorize, AirTime, OTP, SMS
 from django.utils.timezone import now
@@ -138,8 +140,12 @@ def send_sms(phone_number, message):
 
 
 def SendSmsToParticularUsers(request):
+
     form = SmsToParticularUsersForm()
-    queryset = MyUser.objects.all()
+    queryset = MyUser.objects.all().order_by('-Mkoa')
+    #queryset = MyUser.objects.annotate(has_mkoa=Coalesce(F('Mkoa_id'), Value(False))).order_by('-has_mkoa', 'Mkoa__JinaLaMkoa')
+    
+
     uliowatumia_ujumbe = SmsToParticularUsers.objects.all().count()
     count_users = queryset.count()
 
