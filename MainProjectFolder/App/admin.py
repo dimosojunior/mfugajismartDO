@@ -10,7 +10,7 @@ class MyUserAdmin(ImportExportModelAdmin):
     search_fields=('email', 'first_name', 'last_name')
     readonly_fields=('date_joined', 'last_login')
     filter_horizontal=()
-    list_filter=('last_login',)
+    list_filter=('date_joined',)
     fieldsets=()
 
     add_fieldsets=(
