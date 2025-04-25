@@ -115,7 +115,7 @@ def home(request):
 
 class LatestVersionView(APIView):
     def get(self, request):
-        latest_version = "8"
+        latest_version = "9"
         return JsonResponse({"latest_version": latest_version})
 
 class GetAllMyUserView(APIView):
