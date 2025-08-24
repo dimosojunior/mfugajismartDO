@@ -1,4 +1,12 @@
 
+#GetAllDukaLakoView
+#AddDukaLakoView
+#GetChatMessagesView
+#DeleteYourChatMessageView
+#AddChatMessageView
+#GetAinaZaChanjoView
+
+
 
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,8 +15,8 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.contrib import messages
 from .models import *
-import numpy as np
-from scipy.optimize import linprog
+# import numpy as np
+# from scipy.optimize import linprog
 from django.http import HttpResponse
 from datetime import datetime, timedelta
 #import pyotp
