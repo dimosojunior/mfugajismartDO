@@ -1,4 +1,9 @@
-
+#Mylogin_user
+#MyUserRegistrationView
+#WazalishajiWaHudumaCreateForm
+#AllDukaLako
+#Notepad
+#AddNewMatatizoYaWateja
 
 
 
@@ -8087,7 +8092,7 @@ def AddNewMatatizoYaWateja(request):
 
             #SeND EMAIL KWA MTEJA
             subject = "Mfugaji Smart"
-            message = f"Tunakushukuru! {JinaLaMteja}, kwa kuwasiliana nasi, tunaahidi kukupa huduma nzuri zaidi. Endelea kufuga kidigitali na Mfugaji Smart App."
+            message = f"Tunakushukuru! {JinaLaMteja}, kwa kuwasiliana nasi, tunaahidi kukupa huduma na vifaa bora vya ufugaji kama vile brooder za kulea vifaranga, incubator za mayai, mashine za kuchanganya vyakula NK. Endelea kufuga kidigitali na Mfugaji Smart App."
             from_email = settings.EMAIL_HOST_USER
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list, fail_silently=True)
