@@ -33,7 +33,7 @@ SECRET_KEY = "x*za6xf&_80ofdpae!yzq61g9ffikkx9$*iygbl$j7rr4wlf8t" #os.environ.ge
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','5.189.183.80','127.0.0.1','mfugajismart.net','www.mfugajismart.net','137.184.204.91']
+ALLOWED_HOSTS = ['localhost','5.189.183.80','127.0.0.1','MfugajiSmartDigital.pythonanywhere.com','mfugajismart.net','www.mfugajismart.net','137.184.204.91']
 #ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
@@ -97,24 +97,24 @@ AUTH_USER_MODEL="App.MyUser"
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mfugajismartdb',
-        'USER':'mfugajismart',
-        'PASSWORD':'Dimoso@9898',
-        'HOST':'localhost',
-        'PORT':'',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'mfugajismartdb',
+#         'USER':'mfugajismart',
+#         'PASSWORD':'Dimoso@9898',
+#         'HOST':'localhost',
+#         'PORT':'',
+#     }
+# }
 
 
 
